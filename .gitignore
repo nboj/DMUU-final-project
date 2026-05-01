@@ -1,2 +1,4 @@
 .R/
 .direnv/
+*.html
+*.tex

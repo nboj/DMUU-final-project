@@ -248,9 +248,9 @@ ggplot(piracySummary, mapping = aes(y = years)) +
 
 To answer our research question, we used linear regression to model a relationship between stance and pro-funding vs con-funding.
 
-Here we are modeling how stance relates to money-pro versus money-con. To do this, we subtract money-con from money-pro. This means that whenever the difference is positive, there is more money-pro for that stance than money-con. If the difference is negative, then there is more money-con than money-pro for that stance with the 3rd quartile extending to ~1e+03. 
+Here we are modeling how stance relates to money-pro versus money-con. To do this, we subtract money-con from money-pro. This means that whenever the difference is positive, there is more money-pro for that stance than money-con. If the difference is negative, then there is more money-con than money-pro for that stance. 
 
-To help visualize, we have a boxplot which shows the association between the stance category and the difference between money-pro and money-con. Here you can see that there is more money-pro than money-con associated with the yes stance.
+To help visualize, we have a boxplot which shows the association between the stance category and the difference between money-pro and money-con. Here you can see that there is more money-pro than money-con associated with the yes stance with the 3rd quartile extending to ~1e+03.
 
 ```{r}
 piracy_modified <- piracy |> mutate(

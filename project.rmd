@@ -3,21 +3,21 @@ title: "Piracy and PIPA/SOPA"
 subtitle: "This is our final project for Decision Making Under Uncertainty"
 date: "April 25, 2026" 
 author: 
-    - Christian Auman
-    - Nate Miller
-    - Nathan 
-    - Simran Gautam
+  - Christian Auman
+  - Nate Miller
+  - Nathan 
+  - Simran Gautam
 output: 
-    pdf_document:
-        toc: true
-        toc_depth: 2
-        fig_width: 7
-        fig_height: 6
-        fig_caption: true
-        df_print: kable
-        highlight: tango
-        latex_engine: xelatex
-        keep_tex: true
+  pdf_document:
+      toc: true
+      toc_depth: 2
+      fig_width: 7
+      fig_height: 6
+      fig_caption: true
+      df_print: kable
+      highlight: tango
+      latex_engine: xelatex
+      keep_tex: true
 
 fontsize: 11pt
 linestretch: 1.5 
@@ -25,55 +25,55 @@ papersize: letter
 geometry: margin=1in
 
 header-includes:
-  - \usepackage{booktabs}
-  - \usepackage{longtable}
-  - \usepackage{array}
-  - \usepackage{float}
-  - \usepackage{caption}
-  - \usepackage{fancyhdr}
-  - \pagestyle{fancy}
-  - \fancyhf{}
-  - \fancyhead[L]{Piracy and PIPA/SOPA}
-  - \fancyhead[R]{Decision Making Under Uncertainty}
-  - \fancyfoot[C]{\thepage}
-  - \setlength{\headheight}{14pt}
-  - \usepackage{etoolbox}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{float}
+- \usepackage{caption}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \fancyhead[L]{Piracy and PIPA/SOPA}
+- \fancyhead[R]{Decision Making Under Uncertainty}
+- \fancyfoot[C]{\thepage}
+- \setlength{\headheight}{14pt}
+- \usepackage{etoolbox}
 
-  - \makeatletter
-  - |
-    \renewcommand{\maketitle}{
-      \begin{titlepage}
-      \thispagestyle{empty}
-      \vspace*{\fill}
+- \makeatletter
+- |
+  \renewcommand{\maketitle}{
+    \begin{titlepage}
+    \thispagestyle{empty}
+    \vspace*{\fill}
 
-      \begin{center}
-        {\LARGE \@title \par}
-        \vspace{1em}
+    \begin{center}
+      {\LARGE \@title \par}
+      \vspace{1em}
 
-        {\large
-        \lineskip .5em
-        \begin{tabular}[t]{c}
-        \@author
-        \end{tabular}\par}
+      {\large
+      \lineskip .5em
+      \begin{tabular}[t]{c}
+      \@author
+      \end{tabular}\par}
 
-        \vspace{1em}
-        {\large \@date \par}
+      \vspace{1em}
+      {\large \@date \par}
 
-        \vspace{2em}
-        \begin{minipage}{0.7\textwidth}
-        \centering
-        \textbf{Abstract}\\[0.5em]
-        We need to put something here which gives an abstract description of what we did and why it matters
-        \end{minipage}
-      \end{center}
+      \vspace{2em}
+      \begin{minipage}{0.7\textwidth}
+      \centering
+      \textbf{Abstract}\\[0.5em]
+      We investigated whether political funding is associated with U.S. legislators stances on PIPA/SOPA using the piracy dataset.
+      \end{minipage}
+    \end{center}
 
-      \vspace*{\fill}
-      \end{titlepage}
-    }
-  - \makeatother
+    \vspace*{\fill}
+    \end{titlepage}
+  }
+- \makeatother
 
-  - \pretocmd{\tableofcontents}{\thispagestyle{empty}}{}{}
-  - \apptocmd{\tableofcontents}{\newpage}{}{}
+- \pretocmd{\tableofcontents}{\thispagestyle{empty}}{}{}
+- \apptocmd{\tableofcontents}{\newpage}{}{}
 lang: "en-US"
 ---
 
@@ -85,105 +85,227 @@ knitr::opts_chunk$set(
   fig.align = "center"
 )
 
+library(dplyr)
 library(openintro)
+library(tidyverse)
+data(piracy)
 ```
 
 # Introduction
 
-Give a brief introductory paragraph on the project. 
+PIPA and SOPA were proposed laws intended to address online piracy, but they also created major debate about internet regulation, copyright enforcement, and political influence. In this project, we investigate whether political funding is associated with legislators stances on PIPA/SOPA. To answer this question, we use the `piracy` dataset from [openintro.org](https://www.openintro.org/data/index.php?data=piracy), which includes information about U.S. legislators, their party, state, chamber, years in office, funding received from pro- and anti-PIPA/SOPA groups, and their stance on the issue.
 
 ## Project Motivation 
 
-**Questions to Answer:**
+This question matters because political decisions may be influenced by many factors, including party affiliation, ideology, public opinion, and campaign funding. Finding the factors at play helps us understand how political decisions can be influenced.
 
-- Why do we care?
-- What are we doing?
-- Briefly, how are we solving it?
-- What is the data?
-- Where does it come from?
+To study this, we compare pro-PIPA/SOPA funding and anti-PIPA/SOPA funding for each legislator. In our analysis, we calculate a funding difference variable using `money_pro - money_con`, where positive values mean that a legislator received more pro-PIPA/SOPA funding than anti-PIPA/SOPA funding. We then use exploratory plots and a linear regression model to test whether this funding difference, or whether any other factors are associated with stance. 
+
+# Discussion
 
 ## Data Source and Variables
 
-> More in-depth overview about the data
+**Source:**
+The dataset used in this project is called “piracy” and is available as an R dataset. It contains information about U.S. politicians including their party, funding, and stance on an issue.
 
-- Population vs Sample
-- Size:
-  - How many observations? 
-  - How many variables?
-- Variables - describe each variable in the dataset (more than just it's type)
+**Context:**
+This dataset represents political data for members of the House and Senate. It includes information about how much money politicians receive (supporting and opposing), their political party, and their stance (yes, no, or unknown).
+
+**Population vs Sample:**
+The dataset represents the population of legislators included in this study because it contains all legislators recorded in the dataset. However, for the statistical analyses, the subset of legislators with clear “yes” or “no” stances after removing “unknown” responses can be treated as the sample used for analysis.
+
+**Size of Dataset:**
+
+- Number of observations: 534
+- Number of variables: 8
+
+**Variables Description:**
+
+- name: Name of politician
+- party: Political party (D, R, I)
+- state: State represented
+- money_pro: Money supporting
+- money_con: Money opposing
+- years: Years in office
+- stance: Position (yes, no, etc.)
+- chamber: House or Senate
+
+---
+
+## Data Cleaning and Preparation
+
+```{r echo=TRUE}
+# Load data
+data(piracy)
+
+data <- piracy
+# View data
+head(data)
+
+# Size
+dim(data)
+
+# Structure
+str(data)
+
+# Summary
+summary(data)
+
+# Missing values
+colSums(is.na(data))
+
+# Fix spaces
+data$party <- trimws(data$party)
+
+# Convert to factors
+data$party <- as.factor(data$party)
+data$state <- as.factor(data$state)
+data$stance <- as.factor(data$stance)
+data$chamber <- as.factor(data$chamber)
+
+# Clean data
+data_clean <- na.omit(data)
+
+# Counts
+table(data$party)
+table(data$stance)
+table(data$chamber)
+```
 
 # Research Questions and Hypothesis
 
-Give a brief introductory paragraph on this section.
-
 ## Research Question
 
-- Define our primary question that our analysis will answer
-- Describe how we came up with this question
+Our primary research question is: **Is funding associated with legislators stances on PIPA/SOPA?**
+
+We came up with this question because campaign funding is often discussed as a possible influence on political decisions. Since the dataset includes both funding information and legislator stance, we can test whether there is a relationship between pro- and anti-PIPA/SOPA funding and whether a legislator supported the bill.
 
 ## Our Hypothesis
 
-- State null & alternative hypotheses in english
-- Then describe them in statistics language (i.e. symbols)
-- List 2-3 supporting questions we will investigate
+We hope to model this relationship:
+\[ stance = \beta_0 + \beta_1(difference) + \epsilon \]
+
+Our hypotheses are:
+\[ H_0: \beta_1 = 0 \]
+\[ H_A: \beta_1 \neq 0 \]
+
+The null hypothesis \( H_0\) is testing when difference of funding pro vs con has no slope. The alternative hypothesis \(H_A\) is testing when the difference slope is not 0.
 
 # Main Analyses
 
-Briefly describe this section.
-
 ## Exploratory Data Analysis
 
-Give an overview of the plots we use & statistics we used and relate how they answer our research questions.
+```{r}
+piracySummary <- mutate(piracy, sumStance = case_when(
+  stance %in% c("no", "leaning no") ~ "No",
+  stance == "yes" ~ "Yes",
+  TRUE ~ "uncertain"
+))
+piracySummary <- filter(piracySummary, sumStance != "uncertain")
+```
 
-Describe the plot and how it helps answer a research question
+### Bar chart for party relation to stance
 
-**PLOT 1**
-- PLOT 1 figcaption
+```{r}
+ggplot(piracySummary, mapping = aes(x = sumStance, fill = party)) +
+  geom_bar(position = "dodge") +
+  scale_fill_manual(values = c("#1961bf", "#bf2419", "gray")) +
+  labs(title = "Known stances with party affiliation") +
+  scale_x_discrete(name = "Stance")
+```
 
-Describe the plot and how it helps answer a research question
+### Box plots for funding relation to stance
 
-**PLOT 2**
-- PLOT 2 figcaption
+```{r}
+ggplot(piracySummary, mapping = aes(y = money_pro)) +
+  geom_boxplot() +
+  facet_wrap(~sumStance) +
+  labs(title = "Funding supportive of PIPA/SOPA and stance") +
+  scale_x_continuous(labels = NULL) +
+  scale_y_continuous(name = "Money (dollars)")
+```
 
-Describe the plot and how it helps answer a research question
+```{r}
+ggplot(piracySummary, mapping = aes(y = money_con)) +
+  geom_boxplot() +
+  facet_wrap(~sumStance) +
+  labs(title = "Funding opposed to PIPA/SOPA and stance") +
+  scale_x_continuous(labels = NULL) +
+  scale_y_continuous(name = "Money (dollars)")
+```
 
-**PLOT 3**
-- PLOT 3 figcaption
+
+```{r}
+ggplot(piracySummary, mapping = aes(y = years)) +
+  geom_boxplot() +
+  facet_wrap(~sumStance) +
+  labs(title = "Years in office and stance") +
+  scale_x_continuous(labels = NULL)
+```
+
 
 ## Statistical Methods
 
-List the statistical analysis methods we used to answer our research question.
+To answer our research question, we used linear regression to model a relationship between stance and pro-funding vs con-funding.
 
-- Go through each method in separate sections
-  - describe how each method answers one of our research question
-  - explain the results of the particular analysis
-  - define the analysis in proper statistics notation (i.e. with symbols)
+Here we are modeling how stance relates to money-pro versus money-con. To do this, we subtract money-con from money-pro. This means that whenever the difference is positive, there is more money-pro for that stance than money-con. If the difference is negative, then there is more money-con than money-pro for that stance with the 3rd quartile extending to ~1e+03. 
 
-# Discussion (Interpretation, uncertainty, assumptions)
+To help visualize, we have a boxplot which shows the association between the stance category and the difference between money-pro and money-con. Here you can see that there is more money-pro than money-con associated with the yes stance.
 
-*can merge this section into conclusion if we need to shorten the report*
+```{r}
+piracy_modified <- piracy |> mutate(
+  difference = (money_pro) - (money_con),
+  stance_binary = if_else(stance == "yes", 1, if_else(stance == "undecided" | stance == "unknown", .5, 0))
+)
 
-Briefly interpret the results beyond the raw statistics.
+piracy_modified |> ggplot(aes(difference, stance)) +
+  geom_boxplot()
+```
 
-- What do the results imply?
-- Were the hypotheses supported?
-- How should we understand the uncertainty?
-- What assumptions did the analysis rely on?
+Next we produced a linear regression model which models the relationship between the difference of money-pro versus money-con and stance. However, because stance is a categorical variable, we converted it to a variable called `stance_binary`. If stance was yes, stance_binary is 1. If stance was no or leaning-no, `stance_binary` was 0. Anything else was 0.5. We also changed the difference to represent \$10k units instead of \$1 units. This gives us a much nicer numerical result.
+
+```{r}
+piracy_modified <- piracy |> mutate(
+  difference = (money_pro / 10000) - (money_con / 10000),
+  stance_binary = if_else(stance == "yes", 1, if_else(stance == "undecided" | stance == "unknown", .5, 0))
+)
+model <- lm(stance_binary ~ difference, data = piracy_modified)
+summary <- summary(model)
+summary$call
+```
+
+
+The coefficients produced by our model suggests a positive slope for the funding difference, meaning more pro-funding versus con-funding is associated with a closer to yes stance. For our model this means that for every \$10k more money-pro funding than money-con funding, stance was increased by ~0.023. Remember that stance is 0 for no, 0.5 for unknown/undecided, and 1 for yes. So a positive slope means that the positive funding difference is associated with a more yes-stance.
+
+```{r}
+summary$coefficients
+```
+
+$R^2$:
+```{r}
+summary$r.squared
+```
+
+p-value:
+```{r}
+summary$coefficients["difference", "Pr(>|t|)"]
+```
+
+Our p-value is very small here, which means that if there *truly* was no association between stance and difference, the probability of getting a slope this large or larger is extremely small. Our results suggest that if we modeled another population from another year, there would be a positive association between the funding difference and stance. This model suggests that legislators with more pro-funding relative to con-funding tended to have stance scores closer to yes. However, $R^2$ only explains ~7% of variation in the stance, so funding difference is not the only variable which is associated with stance.
 
 # Conclusion (final answer, limitations, future work, why it matters)
 
-Briefly summarize the project and directly answer the main research question.
+Overall, our analysis suggests that legislators with more pro-PIPA/SOPA funding relative to anti-PIPA/SOPA funding tended to have stance scores closer to “yes.” Therefore, our main research question can be answered by saying that funding is associated with stance, but we cannot say that funding directly caused stance as this data is solely observational data.
+
+Given that the coefficient for the `difference` variable in pro vs con funding was positive, and given that the \( p-value \) is much less than \(\alpha\), we reject the null-hypothesis \(H_0\), and conclude that funding is positively associated with stance.
 
 ## Summary of Findings
 
-- Restate our finding: What did the tests conclude (in plain english)
-- Answer our research question directly
-- Supporting findings: What did the exploratory analyses reveal
+The regression test found a positive relationship between funding difference and stance. In other words, as pro-PIPA/SOPA funding increased relative to anti-PIPA/SOPA funding, legislators tended to have stances closer to supporting PIPA/SOPA.
+
+The exploratory boxplot supported this finding visually. The “yes” stance group had higher funding differences compared to the other stance groups, meaning that legislators who supported PIPA/SOPA tended to have more pro-funding relative to con-funding. The regression model confirmed this pattern statistically with a very small p-value.
+
+However, the \(R^2\) value was only about 7%, meaning that funding difference only explains a small amount of the variation in stance. So, while funding is related to stance, many other factors likely influence the legislators positions.
 
 ## Limitations and Future Work
-
-- Limitations: What are the weaknesses of our analysis? (most probably the correlation coefficient is not strong)
-- Unanswered Questions: What remains unknown?
-- Future research section
-- Real-world meaning: So what? Why should anyone care about our findings?
-
+s

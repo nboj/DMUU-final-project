@@ -212,7 +212,7 @@ piracySummary <- filter(piracySummary, sumStance != "uncertain")
 
 ### Bar chart for party relation to stance
 
-The plot shows how many legislators are opposed to and supportive of PIPA/SOPA, separated by their party affiliations. It helps to get an understanding of the party affiliations and how they might potentially correlate with stances.
+The plot shows how many legislators are opposed to and supportive of PIPO/SOPA, separated by their party affiliations. It helps to get an understanding of the party affiliations and how they might potentially correlate with stances.
 
 There appears to be some correlation between the two, with more Republicans being opposed to the bills and more Democrats being in support of them. This fact might add some additional variance to our results, and so could explain it.
 
@@ -227,9 +227,9 @@ ggplot(piracySummary, mapping = aes(x = sumStance, fill = party)) +
 
 ### Box plots for funding relation to stance
 
-The two plots show how much funding legislators received from both pro- and anti-PIPA/SOPA sources, seperated by whether or not the legislators themselves support or oppose the bills.
+The two plots show how much funding legislators received from both pro- and anti-PIPO/SOPA sources, seperated by whether or not the legislators themselves support or oppose the bills.
 
-These plots help to visually illustrate the difference in both types of funding between those opposed and supportive of the bills. It can be clearly seen that those who support the bills also received a significant amount more funding from pro-PIPA/SOPA donors. This suggests a strong correlation between the two. Notably, there is no parallel to this for funding from anti-PIPA/SOPA donors—those who oppose it didn't receive much more funding than those who support it
+These plots help to visually illustrate the difference in both types of funding between those opposed and supportive of the bills. It can be clearly seen that those who support the bills also received a significant amount more funding from pro-PIPO/SOPA donors. This suggests a strong correlation between the two. Notably, there is no parallel to this for funding from anti-PIPO/SOPA donors—those who oppose it didn't receive much more funding than those who support it
 
 
 ```{r}
@@ -267,11 +267,11 @@ ggplot(piracySummary, mapping = aes(y = years)) +
 
 ## Statistical Methods
 
-To answer our research question, we used multiple linear regression to model a relationship between stance and pro-funding vs con-funding and party affiliation.
+To answer our research question, we used linear regression to model a relationship between stance and pro-funding vs con-funding.
 
 Here we are modeling how stance relates to money-pro versus money-con. To do this, we subtract money-con from money-pro. This means that whenever the difference is positive, there is more money-pro for that stance than money-con. If the difference is negative, then there is more money-con than money-pro for that stance. 
 
-To help visualize, we have a boxplot which shows the association between the stance category and the difference between money-pro and money-con. Here you can see that there is more money-pro than money-con associated with the yes stance with the 3rd quartile extending to $54,195 ($5.4195e+04).
+To help visualize, we have a boxplot which shows the association between the stance category and the difference between money-pro and money-con. Here you can see that there is more money-pro than money-con associated with the yes stance with the 3rd quartile extending to $54,195 ($5.4195+e04).
 
 ```{r}
 piracy_modified <- piracy |>
@@ -294,7 +294,7 @@ piracy_modified |> ggplot(aes(difference, stance_merged)) +
   labs(title = "PIPA/SOPA Pro/Con Funding Difference and stance", x = "(PIPA/SOPA Pro-funding) - (PIPA/SOPA Con-funding)")
 ```
 
-Next we produced a multiple linear regression model which models the relationship between stance and party affiliation and the difference of money-pro versus money-con. However, because stance is a categorical variable, we converted it to a variable called `stance_binary`. If stance was yes, stance_binary is 1. Anything else was 0. We also removed the undecided and unknown categories as we are focused on the known components of the data. We also scaled the difference to represent \$10k units instead of \$1 units. This gives us a much nicer numerical result.
+Next we produced a multiple linear regression model which models the relationship between party affiliation and the difference of money-pro versus money-con, and stance. However, because stance is a categorical variable, we converted it to a variable called `stance_binary`. If stance was yes, stance_binary is 1. Anything else was 0. We also removed the undecided and unknown categories as we are focused on the known components of the data. We also scaled the difference to represent \$10k units instead of \$1 units. This gives us a much nicer numerical result.
 
 ```{r}
 model <- lm(stance_binary ~ difference_scaled + party, data = piracy_modified)
@@ -319,15 +319,13 @@ p-value:
 summary$coefficients["difference_scaled", "Pr(>|t|)"]
 ```
 
-Our p-value is very small here, which means that if there *truly* was no association between stance and difference, the probability of getting a slope this large or larger is extremely small. Our results suggest that if we modeled another population from another year, there would be a positive association between the funding difference and stance. This model suggests that legislators with more pro-funding relative to con-funding tended to have stance scores closer to yes. However, $R^2$ only explains ~18% of variation in the stance, so funding difference and party affiliation are not the only variable which is associated with stance.
+Our p-value is very small here, which means that if there *truly* was no association between stance and difference, the probability of getting a slope this large or larger is extremely small. Our results suggest that if we modeled another population from another year, there would be a positive association between the funding difference and stance. This model suggests that legislators with more pro-funding relative to con-funding tended to have stance scores closer to yes. However, $R^2$ only explains ~15% of variation in the stance, so funding difference and party affiliation are not the only variable which is associated with stance.
 
 # Conclusion (final answer, limitations, future work, why it matters)
 
 Overall, our analysis suggests that legislators with more pro-PIPA/SOPA funding relative to anti-PIPA/SOPA funding tended to have stance scores closer to “yes.” Therefore, our main research question can be answered by saying that funding is associated with stance, but we cannot say that funding directly caused stance as this data is solely observational data.
 
 Given that the coefficient for the `difference` variable in pro vs con funding was positive, and given that the \( p-value \) is much less than \(\alpha\), we reject the null-hypothesis \(H_0\), and conclude that funding is positively associated with stance.
-
-Given that the coefficient for the `party` variable was negative, and given that the \( p-value \) is much less than \(\alpha\), we reject the null-hypothesis \(H_0\), and conclude that party affiliation is negatively associated with stance for republicans, and positively associated with stance for democrats.
 
 ## Summary of Findings
 
@@ -338,13 +336,4 @@ The exploratory boxplot supported this finding visually. The “yes” stance gr
 However, the \(R^2\) value was only about 18%, meaning that funding difference only explains a small amount of the variation in stance. So, while funding is related to stance, many other factors likely influence the legislators positions.
 
 ## Limitations and Future Work
-
-Here we have listed a few limitations of our methodologies:
-
-- our model only explains ~18% of the variation in stance (funding & party are not the only predictors)
-- Logistic regression would likely fit our data better
-- Much of the data is unknown or undecided 
-- Missing donation values (NAs)
-- Correlation \(\neq\) causation 
-
-To improve upon this, we could use logistic regression models which would more accurately model the categorical response variable, and we could include data over multiple years to see more patterns in the data. 
+s

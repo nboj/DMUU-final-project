@@ -196,6 +196,10 @@ The null hypothesis \( H_0\) is testing when difference of funding pro vs con ha
 
 The null hypothesis \( H_0\) is testing when party affiliation is not associated with stance. The alternative hypothesis \(H_A\) is testing that party affiliation is associated with stance.
 
+**Type I Error**: Concluding money associates with stance when it doesn’t
+**Type II Error**: Concluding there is no association when there is association
+**Worse Type I**: — falsely accusing legislators of being influenced by money
+
 
 # Main Analyses
 
@@ -297,7 +301,7 @@ piracy_modified |> ggplot(aes(difference, stance_merged)) +
 Next we produced a multiple linear regression model which models the relationship between stance and party affiliation and the difference of money-pro versus money-con. However, because stance is a categorical variable, we converted it to a variable called `stance_binary`. If stance was yes, stance_binary is 1. Anything else was 0. We also removed the undecided and unknown categories as we are focused on the known components of the data. We also scaled the difference to represent \$10k units instead of \$1 units. This gives us a much nicer numerical result.
 
 ```{r}
-model <- lm(stance_binary ~ difference_scaled + party, data = piracy_modified)
+model <- lm(stance_binary ~ difference_scaled + party + difference_scaled:party, data = piracy_modified)
 summary <- summary(model)
 summary$call
 ```
@@ -342,6 +346,7 @@ However, the \(R^2\) value was only about 18%, meaning that funding difference o
 Here we have listed a few limitations of our methodologies:
 
 - our model only explains ~18% of the variation in stance (funding & party are not the only predictors)
+- testing our model showed that it is not viable for inference, however this is expected with a binary response variable. Our reason for not using logistic regression is that we wanted to stay aligned with what was taught in class
 - Logistic regression would likely fit our data better
 - Much of the data is unknown or undecided 
 - Missing donation values (NAs)
